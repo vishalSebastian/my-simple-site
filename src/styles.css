@@ -63,3 +63,17 @@ input[type="text"] { padding: 8px; border: 1px solid #cbd2d9; border-radius: 6px
 .nest-box.nest-root { margin-left: 0; }
 .nest-id { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: #475569; }
 .nest-hit { outline: 2px solid #16a34a; background: #dcfce7 !important; }
+/* Level groups + locator tester */
+.level-group { margin-top: 28px; }
+.level-title { display: inline-block; font-size: 15px; padding: 4px 12px; border-radius: 999px; margin: 0; }
+.tester { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+.tester-label { font-size: 13px; font-weight: 600; color: #475569; }
+.tester .selector-try input { padding: 8px; border: 1px solid #cbd2d9; border-radius: 6px; }
+.secondary-btn { background: #94a3b8; }
+.tester-ok { margin: 0; color: #15803d; font-weight: 600; font-size: 14px; }
+.tester-bad { margin: 0; color: #b45309; font-weight: 600; font-size: 14px; }
+.loc-hit { outline: 3px solid #f59e0b !important; outline-offset: 2px; background: #fef3c7 !important; color: #78350f !important; }
+.loc-hit-ok { outline: 3px solid #16a34a !important; outline-offset: 2px; background: #dcfce7 !important; color: #14532d !important; }
+.name-gate { background: #fff; border: 1px solid #e4e7eb; border-radius: 8px; padding: 18px; max-width: 480px; }
+.name-gate h2 { margin: 0 0 6px; font-size: 18px; }
+.name-gate input { padding: 8px; border: 1px solid #cbd2d9; border-radius: 6px; }
