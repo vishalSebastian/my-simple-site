@@ -4,6 +4,7 @@ import DelayedMessage from './pages/DelayedMessage.jsx';
 import DynamicControls from './pages/DynamicControls.jsx';
 import ProgressBar from './pages/ProgressBar.jsx';
 import Login from './pages/Login.jsx';
+import LearnLocators from './pages/LearnLocators.jsx';
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
       <header className="header">
         <Link to="/" className="brand" data-testid="brand">VP's QA Practice</Link>
         <nav>
+          <NavLink to="/learn-locators">Learn Locators</NavLink>
           <NavLink to="/delay">Delayed Message</NavLink>
           <NavLink to="/dynamic-controls">Dynamic Controls</NavLink>
           <NavLink to="/progress-bar">Progress Bar</NavLink>
@@ -20,6 +22,7 @@ export default function App() {
       <main className="content">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/learn-locators" element={<LearnLocators />} />
           <Route path="/delay" element={<DelayedMessage />} />
           <Route path="/dynamic-controls" element={<DynamicControls />} />
           <Route path="/progress-bar" element={<ProgressBar />} />
