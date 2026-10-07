@@ -1,4 +1,4 @@
-// Sends learning events to Supabase (insert-only; the site can't read data back).
+// Sends challenge events to Supabase (insert-only; the site can't read data back).
 // Supabase project: omuylnudrojhsashhvfj
 const SUPABASE_URL = 'https://omuylnudrojhsashhvfj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_bvrU5hLcKhj6g0l88nHSfw_LF0JIFCT';
@@ -10,6 +10,15 @@ const sessionId =
     : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
 let candidate = '';
+
+// true when the browser is driven by Playwright/Selenium (navigator.webdriver)
+export function isAutomated() {
+  return typeof navigator !== 'undefined' && navigator.webdriver === true;
+}
+
+export function getCandidate() {
+  return candidate;
+}
 
 export function getSavedName() {
   try { return localStorage.getItem(NAME_KEY) || ''; } catch { return ''; }
@@ -36,6 +45,7 @@ export function track(event, { challenge = null, locator = null, matchCount = nu
       event,
       locator,
       match_count: matchCount,
+      automated: isAutomated(),
     }),
   }).catch(() => { /* tracking must never break the page */ });
 }

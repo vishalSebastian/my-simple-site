@@ -77,3 +77,41 @@ input[type="text"] { padding: 8px; border: 1px solid #cbd2d9; border-radius: 6px
 .name-gate { background: #fff; border: 1px solid #e4e7eb; border-radius: 8px; padding: 18px; max-width: 480px; }
 .name-gate h2 { margin: 0 0 6px; font-size: 18px; }
 .name-gate input { padding: 8px; border: 1px solid #cbd2d9; border-radius: 6px; }
+/* Playwright Challenges */
+.level-l1 { background: #dcfce7; color: #166534; }
+.level-l2 { background: #fef3c7; color: #92400e; }
+.level-l3 { background: #fee2e2; color: #991b1b; }
+.level-group h2 { display: flex; align-items: center; gap: 10px; font-size: 20px; margin-bottom: 4px; }
+.card h3 { margin: 0 0 6px; font-size: 17px; color: #2563eb; }
+.card p { margin: 4px 0 0; }
+.crumbs { font-size: 13px; color: #616e7c; margin: 0 0 8px; }
+.challenge-page h1 { margin: 0; font-size: 24px; }
+.skill { margin: 6px 0 0; color: #475569; font-size: 14px; }
+.notice { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 8px 12px; font-size: 14px; }
+.playground[aria-disabled] { opacity: 0.6; }
+.outcome { margin-top: 12px; border-radius: 8px; padding: 12px 14px; }
+.outcome p { margin: 6px 0 0; }
+.outcome-ok { background: #dcfce7; border: 1px solid #86efac; color: #14532d; }
+.outcome-warn { background: #fef3c7; border: 1px solid #fcd34d; color: #78350f; }
+.outcome-bad { background: #fee2e2; border: 1px solid #fca5a5; color: #7f1d1d; }
+.outcome + .secondary-btn { margin-top: 8px; }
+.success-code { display: inline-block; margin-left: 8px; font-size: 16px; font-weight: 700; background: #fff; padding: 2px 8px; border-radius: 4px; }
+.run-box h2 { font-size: 15px; margin: 18px 0 0; }
+.hint-box { background: #fff; border: 1px solid #e4e7eb; border-radius: 6px; padding: 10px 12px; }
+.hint-box p { margin: 0 0 6px; }
+.pager { display: flex; justify-content: space-between; gap: 12px; margin-top: 24px; font-size: 14px; }
+.row-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.stack { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; width: 100%; }
+.form fieldset { border: 1px solid #e4e7eb; border-radius: 6px; padding: 8px 12px; display: flex; flex-wrap: wrap; gap: 12px; }
+.form legend { font-size: 13px; font-weight: 600; color: #475569; }
+.form select { padding: 8px; border: 1px solid #cbd2d9; border-radius: 6px; font-size: 14px; }
+label.inline { display: inline-flex; align-items: center; gap: 6px; }
+.report { background: #f8fafc; }
+.overlay-wrap { position: relative; width: 100%; max-width: 320px; }
+.user-list { list-style: none; margin: 0; padding: 8px; border: 1px solid #e4e7eb; border-radius: 6px; background: #fff; }
+.link-btn { background: none; color: #2563eb; padding: 4px 0; text-decoration: underline; }
+.overlay { position: absolute; inset: 0; background: rgba(255, 255, 255, 0.92); display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; border-radius: 6px; }
+.spinner { width: 18px; height: 18px; border: 3px solid #cbd2d9; border-top-color: #2563eb; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+#users select { padding: 4px; }
+.pager a { color: #2563eb; }

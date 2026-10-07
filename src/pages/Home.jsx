@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 const pages = [
-  { to: '/learn-locators', title: 'Learn Locators', desc: 'Practice finding elements: nested HTML, IDs, tables, dynamic IDs, iframes and more.' },
+  { to: '/challenges', title: 'Playwright Challenges', desc: '13 challenges in 3 levels: basics, waiting, and tricky locators. Solve them with Playwright scripts.' },
   { to: '/delay', title: 'Delayed Message', desc: 'Click Start; the message appears after a delay. Practise waiting with expect().' },
   { to: '/dynamic-controls', title: 'Dynamic Controls', desc: 'Remove/add a checkbox and enable/disable an input.' },
   { to: '/progress-bar', title: 'Progress Bar', desc: 'Start and stop a progress bar at the right value.' },

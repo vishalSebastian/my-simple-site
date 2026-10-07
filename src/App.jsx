@@ -1,10 +1,11 @@
-import { Routes, Route, Link, NavLink } from 'react-router-dom';
+import { Routes, Route, Link, NavLink, Navigate } from 'react-router-dom';
 import Home from './pages/Home.jsx';
 import DelayedMessage from './pages/DelayedMessage.jsx';
 import DynamicControls from './pages/DynamicControls.jsx';
 import ProgressBar from './pages/ProgressBar.jsx';
 import Login from './pages/Login.jsx';
-import LearnLocators from './pages/LearnLocators.jsx';
+import Challenges from './pages/Challenges.jsx';
+import ChallengePage from './pages/ChallengePage.jsx';
 
 export default function App() {
   return (
@@ -12,7 +13,7 @@ export default function App() {
       <header className="header">
         <Link to="/" className="brand" data-testid="brand">VP's QA Practice</Link>
         <nav>
-          <NavLink to="/learn-locators">Learn Locators</NavLink>
+          <NavLink to="/challenges">Challenges</NavLink>
           <NavLink to="/delay">Delayed Message</NavLink>
           <NavLink to="/dynamic-controls">Dynamic Controls</NavLink>
           <NavLink to="/progress-bar">Progress Bar</NavLink>
@@ -22,7 +23,9 @@ export default function App() {
       <main className="content">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/learn-locators" element={<LearnLocators />} />
+          <Route path="/challenges" element={<Challenges />} />
+          <Route path="/challenges/:id" element={<ChallengePage />} />
+          <Route path="/learn-locators" element={<Navigate to="/challenges" replace />} />
           <Route path="/delay" element={<DelayedMessage />} />
           <Route path="/dynamic-controls" element={<DynamicControls />} />
           <Route path="/progress-bar" element={<ProgressBar />} />
