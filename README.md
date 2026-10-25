@@ -27,18 +27,18 @@ Challenges take the candidate's name from `?name=` in the URL and log events (`o
 ## Employee Onboarding app
 A full app for candidates to automate: `#/signup`, `#/login`, `#/onboarding` (employee) and `#/hr` (HR).
 
-- **Login** is JWT based (Supabase Auth). The access token is stored in localStorage as
-  `sb-omuylnudrojhsashhvfj-auth-token` (demo mode: `demo-session`), expires in 1 hour, and is sent with every request.
-- **Sign-up** password rules: 8+ characters, upper, lower, number, special character (live checklist on the form).
-- **Onboarding**: 4 steps (Personal, Job, Documents, Review). Uploads (photo, ID proof, resume) are optional.
-- **HR**: dashboard with counts, filter, search, review drawer, approve / reject (reject needs a comment).
+- Supabase is used **only as a database**. No Supabase Auth, no Storage, no emails.
+- **Sign up** adds a row to our own `app.users` table (password hashed with bcrypt).
+- **Log in** checks the password and returns our own **JWT** (HS256, 1 hour), stored in localStorage as `app-session`.
+- Every call is `POST /rest/v1/rpc/<function>` with the token as `p_token`; the database checks it.
+  Functions: `signup`, `login`, `me`, `get_onboarding`, `save_onboarding`, `submit_onboarding`, `list_documents`,
+  `upload_document`, `delete_document`, `get_document`, `list_employees`, `review_onboarding`.
+- Uploaded files (optional) are stored in the database (max 5 MB).
 
 ### One-time Supabase setup
-1. SQL Editor: run `supabase/003_onboarding.sql`.
-2. Authentication → Sign In / Providers → Email: turn **off** "Confirm email" (so sign-up logs in straight away).
-3. Authentication → Password settings: minimum length 8, require lower, upper, digits and symbols (matches the form).
-4. Sign up an HR account on the site, then in SQL Editor:
-   `update public.profiles set role = 'hr' where email = 'your-hr@email.com';`
+1. SQL Editor: run `supabase/003_onboarding.sql` (safe to re-run; removes the older Supabase Auth version).
+2. Sign up on the site, then make yourself HR in SQL Editor:
+   `update app.users set role = 'hr' where email = 'your@email.com';`
 
 ### Demo mode accounts (`npm run dev:demo`)
 - HR: `hr@demo.test` / `Password@123`

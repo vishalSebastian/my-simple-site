@@ -1,5 +1,5 @@
 /*
-  Demo backend: same functions as supabaseApi, but everything lives in localStorage.
+  Demo backend: same functions as serverApi, but everything lives in localStorage.
   Used by `npm run dev:demo` so the app (and Playwright tests) work without Supabase.
   Seeded users:  hr@demo.test / Password@123 (HR)   rahul@demo.test / Password@123 (employee, submitted)
 

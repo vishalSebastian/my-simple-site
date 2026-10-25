@@ -1,13 +1,14 @@
-// Supabase project settings. The publishable key is meant to be public;
-// Row Level Security in the database decides what each user may do.
+// Supabase project settings (used as a plain database: no Supabase Auth, no Storage).
+// The publishable key is meant to be public; the database functions check the user's token.
 export const SUPABASE_URL = 'https://omuylnudrojhsashhvfj.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_bvrU5hLcKhj6g0l88nHSfw_LF0JIFCT';
+
+// Where the database API lives. VITE_API_URL can point to another server (e.g. for local testing).
+export const API_URL = import.meta.env.VITE_API_URL || SUPABASE_URL;
 
 // Demo mode: runs the whole app in the browser (localStorage), no Supabase needed.
 // Start it with: npm run dev:demo
 export const DEMO_MODE = import.meta.env.VITE_DEMO === 'true';
-
-export const STORAGE_BUCKET = 'onboarding-docs';
 
 // All uploads are optional; an employee can submit without any documents.
 export const DOC_TYPES = {
