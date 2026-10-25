@@ -7,7 +7,7 @@ export const SUPABASE_KEY = 'sb_publishable_bvrU5hLcKhj6g0l88nHSfw_LF0JIFCT';
 export const API_URL = import.meta.env.VITE_API_URL || SUPABASE_URL;
 
 // Demo mode: runs the whole app in the browser (localStorage), no Supabase needed.
-// Start it with: npm run dev:demo
+// Used by `npm run dev` (local). The published site (npm run build) uses Supabase.
 export const DEMO_MODE = import.meta.env.VITE_DEMO === 'true';
 
 // All uploads are optional; an employee can submit without any documents.

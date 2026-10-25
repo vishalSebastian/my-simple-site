@@ -11,8 +11,8 @@ A small React (Vite) practice site for QA automation (Playwright / Selenium).
 
 ## Run locally
     npm install
-    npm run dev        # uses the real Supabase project
-    npm run dev:demo   # demo mode: no Supabase, data kept in the browser
+    npm run dev          # local: no Supabase, data kept in the browser (demo accounts below)
+    npm run dev:server   # local, but using the real Supabase database
 
 ## Deploy
 Pushing to `main` builds and deploys to GitHub Pages via `.github/workflows/deploy.yml`.
@@ -40,7 +40,7 @@ A full app for candidates to automate: `#/signup`, `#/login`, `#/onboarding` (em
 2. Sign up on the site, then make yourself HR in SQL Editor:
    `update app.users set role = 'hr' where email = 'your@email.com';`
 
-### Demo mode accounts (`npm run dev:demo`)
+### Local accounts (`npm run dev`)
 - HR: `hr@demo.test` / `Password@123`
 - Employee (already submitted): `rahul@demo.test` / `Password@123`
 
