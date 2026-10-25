@@ -1,13 +1,13 @@
-// Supabase project settings (used as a plain database: no Supabase Auth, no Storage).
-// The publishable key is meant to be public; the database functions check the user's token.
+// Supabase project (used by the Challenges progress tracking only).
+// The onboarding app talks to our own Node.js API at /api instead.
 export const SUPABASE_URL = 'https://omuylnudrojhsashhvfj.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_bvrU5hLcKhj6g0l88nHSfw_LF0JIFCT';
 
-// Where the database API lives. VITE_API_URL can point to another server (e.g. for local testing).
-export const API_URL = import.meta.env.VITE_API_URL || SUPABASE_URL;
+// Our Node.js API (server/app.js). Same site on Vercel; proxied to localhost:3001 when running locally.
+export const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Demo mode: runs the whole app in the browser (localStorage), no Supabase needed.
-// Used by `npm run dev` (local). The published site (npm run build) uses Supabase.
+// Start it with: npm run dev:demo
 export const DEMO_MODE = import.meta.env.VITE_DEMO === 'true';
 
 // All uploads are optional; an employee can submit without any documents.
@@ -22,20 +22,20 @@ export const DOC_TYPES = {
   id_proof: {
     label: 'ID proof (Aadhaar / PAN / Passport)',
     required: false,
-    hint: 'PDF, JPG or PNG, up to 5 MB',
+    hint: 'PDF, JPG or PNG, up to 3 MB',
     accept: ['application/pdf', 'image/png', 'image/jpeg'],
-    maxSize: 5 * 1024 ** 2,
+    maxSize: 3 * 1024 ** 2,
   },
   resume: {
     label: 'Resume',
     required: false,
-    hint: 'PDF or Word, up to 5 MB',
+    hint: 'PDF or Word, up to 3 MB',
     accept: [
       'application/pdf',
       'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     ],
-    maxSize: 5 * 1024 ** 2,
+    maxSize: 3 * 1024 ** 2,
   },
 };
 

@@ -11,12 +11,15 @@ A small React (Vite) practice site for QA automation (Playwright / Selenium).
 
 ## Run locally
     npm install
-    npm run dev          # local: no Supabase, data kept in the browser (demo accounts below)
-    npm run dev:server   # local, but using the real Supabase database
+    npm run dev          # website only, data kept in the browser (accounts below)
+
+    # with the real API: create .env with DATABASE_URL and JWT_SECRET, then in two terminals
+    npm run dev:api      # Node.js API on http://localhost:3001/api
+    npm run dev:server   # website, /api calls go to the local API
 
 ## Deploy
-Pushing to `main` builds and deploys to GitHub Pages via `.github/workflows/deploy.yml`.
-Live URL: https://vishalsebastian.github.io/my-simple-site/
+- **Vercel** (main site, website + API): every push to `main` redeploys. See setup below.
+- GitHub Pages (`.github/workflows/deploy.yml`) still publishes the website, but the onboarding app needs the API, so use the Vercel URL for it.
 
 ## Progress tracking (Supabase)
 Challenges take the candidate's name from `?name=` in the URL and log events (`open`, `solved`, `solved_manual`, `fail`, `stuck`, `reveal`, `test_correct`, `test_wrong`) to Supabase, with `automated` = whether Playwright drove the browser.
@@ -27,17 +30,33 @@ Challenges take the candidate's name from `?name=` in the URL and log events (`o
 ## Employee Onboarding app
 A full app for candidates to automate: `#/signup`, `#/login`, `#/onboarding` (employee) and `#/hr` (HR).
 
-- Supabase is used **only as a database**. No Supabase Auth, no Storage, no emails.
-- **Sign up** adds a row to our own `app.users` table (password hashed with bcrypt).
-- **Log in** checks the password and returns our own **JWT** (HS256, 1 hour), stored in localStorage as `app-session`.
-- Every call is `POST /rest/v1/rpc/<function>` with the token as `p_token`; the database checks it.
-  Functions: `signup`, `login`, `me`, `get_onboarding`, `save_onboarding`, `submit_onboarding`, `list_documents`,
-  `upload_document`, `delete_document`, `get_document`, `list_employees`, `review_onboarding`.
-- Uploaded files (optional) are stored in the database (max 5 MB).
+- Website (React) + **Node.js API** (Express, `server/app.js`), both on **Vercel**.
+- Supabase is used **only as a Postgres database** (tables in `supabase/003_onboarding.sql`). No Supabase Auth, no Storage, no emails.
+- Sign up adds a user (password hashed with bcrypt). Log in returns a **JWT** (1 hour), stored in localStorage as `app-session`
+  and sent as `Authorization: Bearer <token>`.
 
-### One-time Supabase setup
-1. SQL Editor: run `supabase/003_onboarding.sql` (safe to re-run; removes the older Supabase Auth version).
-2. Sign up on the site, then make yourself HR in SQL Editor:
+### API (all under `/api`)
+| Method | Path | Who |
+|---|---|---|
+| POST | `/auth/signup` `{ fullName, email, password }` | anyone |
+| POST | `/auth/login` `{ email, password }` returns `{ access_token, expires_at, user }` | anyone |
+| GET | `/auth/me` | logged in |
+| GET / PUT | `/onboarding` (PUT saves the draft) | employee (HR: `?userId=`) |
+| POST | `/onboarding/submit` | employee |
+| GET / POST | `/documents` `{ docType, fileName, mimeType, contentBase64 }` (max 3 MB) | employee (HR: `?userId=`) |
+| DELETE | `/documents/:id` | employee |
+| GET | `/documents/:id/file` | owner or HR |
+| GET | `/hr/employees` | HR |
+| POST | `/hr/employees/:id/review` `{ decision: "approved" or "rejected", comment }` | HR |
+
+### Setup (one time)
+1. **Supabase** > SQL Editor: run `supabase/003_onboarding.sql`.
+2. **Supabase** > Connect: copy the **Transaction pooler** connection string (port 6543) and put your database password in it.
+3. **Vercel** > Add New > Project > import this GitHub repo > Environment Variables:
+   - `DATABASE_URL` = the connection string from step 2
+   - `JWT_SECRET` = any long random text
+   Then Deploy. Every `git push` redeploys automatically.
+4. Sign up on the site, then make yourself HR (Supabase SQL Editor):
    `update app.users set role = 'hr' where email = 'your@email.com';`
 
 ### Local accounts (`npm run dev`)
@@ -50,7 +69,7 @@ Pattern: `<page>-<thing>-<type>`, e.g. `login-email-input`, `onboarding-next-but
 | Area | Main test ids |
 |---|---|
 | Header | `brand`, `nav-home`, `nav-onboarding`, `nav-hr`, `nav-challenges`, `nav-practice`, `header-login-button`, `header-signup-button`, `header-user-menu`, `header-user-name`, `header-user-role`, `header-logout-button` |
-| Login | `login-email-input`, `login-password-input`, `login-password-toggle`, `login-submit-button`, `login-error`, `login-session-expired`, `login-signup-link` |
+| Login | `login-signup-success`, `login-email-input`, `login-password-input`, `login-password-toggle`, `login-submit-button`, `login-error`, `login-session-expired`, `login-signup-link` |
 | Sign up | `signup-fullname-input`, `signup-email-input`, `signup-password-input`, `signup-confirm-password-input`, `signup-terms-checkbox`, `signup-submit-button`, `signup-error`, `signup-password-strength`, `signup-password-rule-<length\|uppercase\|lowercase\|number\|special>` (has `data-valid`) |
 | Onboarding | `onboarding-status-badge`, `onboarding-step-<personal\|job\|documents\|review>`, `onboarding-<first-name\|last-name\|phone\|dob\|address\|emergency-name\|emergency-phone\|job-title\|start-date>-input`, `onboarding-department-select`, `onboarding-location-select`, `onboarding-employment-type-<full-time\|part-time\|contract>`, `onboarding-back-button`, `onboarding-next-button`, `onboarding-confirm-checkbox`, `onboarding-submit-button`, `onboarding-rejected-alert`, `onboarding-hr-comment`, `onboarding-submitted-message`, `onboarding-approved-message` |
 | Uploads | `upload-<photo\|id-proof\|resume>-dropzone`, `upload-<type>-input` (use `setInputFiles`), `upload-<type>-error`, `document-<type>`, `document-<type>-name`, `document-<type>-preview`, `document-<type>-open-link`, `document-<type>-remove-button` |

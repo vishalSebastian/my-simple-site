@@ -1,32 +1,14 @@
 /*
-  Talks to our own database functions on Supabase (no Supabase Auth, no Storage).
-  Every call is:  POST {API_URL}/rest/v1/rpc/<function>   with header  apikey: <publishable key>
-  Login returns a JWT. It is kept in localStorage ("app-session") and sent as p_token on every call.
+  Talks to our Node.js API (server/app.js), hosted on Vercel at /api.
+  Login returns a JWT. It is kept in localStorage ("app-session") and sent as
+  "Authorization: Bearer <token>" on every request.
 */
-import { API_URL, SUPABASE_KEY } from './config.js';
+import { API_URL } from './config.js';
 
 const SESSION_KEY = 'app-session';
 const listeners = new Set();
 const docUrlCache = new Map();
 let expiryTimer;
-
-async function rpc(fn, args = {}) {
-  const res = await fetch(`${API_URL}/rest/v1/rpc/${fn}`, {
-    method: 'POST',
-    headers: { apikey: SUPABASE_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify(args),
-  });
-  const text = await res.text();
-  const body = text ? JSON.parse(text) : null;
-  if (!res.ok) {
-    const error = new Error(body?.message || `Request failed (${res.status})`);
-    error.status = res.status;
-    // Token expired or invalid: log out
-    if (res.status === 401 && fn !== 'login') setSession(null, 'expired');
-    throw error;
-  }
-  return body;
-}
 
 // ---------- session (JWT) ----------
 function storedSession() {
@@ -46,7 +28,31 @@ function setSession(session, reason) {
 }
 
 const publicSession = (s) => ({ user: { id: s.user.id, email: s.user.email }, access_token: s.access_token, expires_at: s.expires_at });
-const token = () => storedSession()?.access_token;
+
+// ---------- HTTP ----------
+async function request(method, path, body, { raw = false } = {}) {
+  const token = storedSession()?.access_token;
+  const res = await fetch(`${API_URL}${path}`, {
+    method,
+    headers: {
+      ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    const error = new Error(data.message || `Request failed (${res.status})`);
+    error.status = res.status;
+    if (res.status === 401 && path !== '/auth/login') setSession(null, 'expired');
+    throw error;
+  }
+  if (raw) return res;
+  return res.status === 204 ? null : res.json();
+}
+
+const get = (path) => request('GET', path);
+const qs = (userId) => (userId ? `?userId=${encodeURIComponent(userId)}` : '');
 
 const fileToBase64 = (file) => new Promise((resolve, reject) => {
   const reader = new FileReader();
@@ -75,13 +81,12 @@ export const serverApi = {
 
   // Sign up only adds the user. The user then logs in to get a token.
   async signUp({ fullName, email, password }) {
-    await rpc('signup', { p_full_name: fullName, p_email: email, p_password: password });
+    await request('POST', '/auth/signup', { fullName, email, password });
     return { needsConfirmation: false };
   },
 
   async signIn({ email, password }) {
-    const s = await rpc('login', { p_email: email, p_password: password });
-    setSession(s);
+    setSession(await request('POST', '/auth/login', { email, password }));
   },
 
   async signOut() {
@@ -90,61 +95,44 @@ export const serverApi = {
     setSession(null);
   },
 
-  // ---------- Profile ----------
-  async getProfile() {
-    return rpc('me', { p_token: token() });
-  },
+  getProfile: () => get('/auth/me'),
 
   // ---------- Onboarding ----------
-  async getOnboarding(userId) {
-    return rpc('get_onboarding', { p_token: token(), p_user_id: userId });
-  },
-
-  async saveOnboarding(_userId, fields) {
-    return rpc('save_onboarding', { p_token: token(), p_fields: fields });
-  },
-
-  async submitOnboarding() {
-    return rpc('submit_onboarding', { p_token: token() });
-  },
+  getOnboarding: (userId) => get(`/onboarding${qs(userId)}`),
+  saveOnboarding: (_userId, fields) => request('PUT', '/onboarding', fields),
+  submitOnboarding: () => request('POST', '/onboarding/submit', {}),
 
   // ---------- Documents ----------
-  async listDocuments(userId) {
-    return rpc('list_documents', { p_token: token(), p_user_id: userId });
-  },
+  listDocuments: (userId) => get(`/documents${qs(userId)}`),
 
   async uploadDocument(_userId, docType, file) {
-    return rpc('upload_document', {
-      p_token: token(),
-      p_doc_type: docType,
-      p_file_name: file.name,
-      p_mime_type: file.type,
-      p_content_base64: await fileToBase64(file),
+    return request('POST', '/documents', {
+      docType,
+      fileName: file.name,
+      mimeType: file.type,
+      contentBase64: await fileToBase64(file),
     });
   },
 
   async deleteDocument(doc) {
-    await rpc('delete_document', { p_token: token(), p_document_id: doc.id });
+    await request('DELETE', `/documents/${doc.id}`);
     if (docUrlCache.has(doc.id)) {
       URL.revokeObjectURL(docUrlCache.get(doc.id));
       docUrlCache.delete(doc.id);
     }
   },
 
-  // Downloads the file and returns a temporary browser URL for preview / open
+  // Downloads the file (with the token) and returns a temporary browser URL
   async getDocumentUrl(doc) {
     if (docUrlCache.has(doc.id)) return docUrlCache.get(doc.id);
-    const { mime_type: mime, content_base64: b64 } = await rpc('get_document', { p_token: token(), p_document_id: doc.id });
-    const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
-    const url = URL.createObjectURL(new Blob([bytes], { type: mime }));
+    const res = await request('GET', `/documents/${doc.id}/file`, undefined, { raw: true });
+    const url = URL.createObjectURL(await res.blob());
     docUrlCache.set(doc.id, url);
     return url;
   },
 
   // ---------- HR ----------
-  async listEmployees() {
-    return rpc('list_employees', { p_token: token() });
-  },
+  listEmployees: () => get('/hr/employees'),
 
   async getEmployee(userId) {
     const [employees, onboarding, documents] = await Promise.all([
@@ -152,11 +140,9 @@ export const serverApi = {
       this.getOnboarding(userId),
       this.listDocuments(userId),
     ]);
-    const profile = employees.find((e) => e.id === userId);
-    return { profile, onboarding, documents };
+    return { profile: employees.find((e) => e.id === userId), onboarding, documents };
   },
 
-  async reviewOnboarding(userId, _reviewerId, decision, comment) {
-    return rpc('review_onboarding', { p_token: token(), p_user_id: userId, p_decision: decision, p_comment: comment || null });
-  },
+  reviewOnboarding: (userId, _reviewerId, decision, comment) =>
+    request('POST', `/hr/employees/${userId}/review`, { decision, comment: comment || '' }),
 };
