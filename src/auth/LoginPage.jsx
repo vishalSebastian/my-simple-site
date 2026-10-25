@@ -14,9 +14,10 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const sessionExpired = location.state?.reason === 'expired';
+  const justRegistered = location.state?.registered === true;
 
   const form = useForm({
-    initialValues: { email: '', password: '' },
+    initialValues: { email: location.state?.email || '', password: '' },
     validate: {
       email: (v) => (!v.trim() ? 'Email is required' : EMAIL_PATTERN.test(v.trim()) ? null : 'Enter a valid email'),
       password: (v) => (v ? null : 'Password is required'),
@@ -32,7 +33,7 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       await api.signIn({ email: email.trim().toLowerCase(), password });
-      navigate(location.state?.from || '/app', { replace: true });
+      navigate(location.state?.from && location.state.from !== '/login' ? location.state.from : '/app', { replace: true });
     } catch (e) {
       if (/invalid login credentials/i.test(e.message)) setError('Invalid email or password');
       else if (/email not confirmed/i.test(e.message)) setError('Please confirm your email before logging in');
@@ -49,6 +50,11 @@ export default function LoginPage() {
 
       <form onSubmit={form.onSubmit(submit)} noValidate data-testid="login-form">
         <Stack>
+          {justRegistered && !error && (
+            <Alert color="green" variant="light" data-testid="login-signup-success">
+              Account created. Log in to continue.
+            </Alert>
+          )}
           {sessionExpired && !error && (
             <Alert color="yellow" variant="light" data-testid="login-session-expired">
               Your session has expired. Please log in again.

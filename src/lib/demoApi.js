@@ -154,7 +154,7 @@ export const demoApi = {
     const user = { id: uid(), email, password, full_name: fullName, role: 'employee', created_at: now() };
     db.users.push(user);
     save(db);
-    await startSession(user);
+    // Sign-up only creates the account. The user logs in separately to get a token.
     return { needsConfirmation: false };
   },
 

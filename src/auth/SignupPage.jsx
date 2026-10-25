@@ -72,15 +72,16 @@ export default function SignupPage() {
     },
   });
 
-  if (user && !checkEmail) return <Navigate to="/app" replace />;
+  if (user && !submitting && !checkEmail) return <Navigate to="/app" replace />;
 
   const submit = async ({ fullName, email, password }) => {
     setError('');
     setSubmitting(true);
     try {
-      const { needsConfirmation } = await api.signUp({ fullName: fullName.trim(), email: email.trim().toLowerCase(), password });
+      const cleanEmail = email.trim().toLowerCase();
+      const { needsConfirmation } = await api.signUp({ fullName: fullName.trim(), email: cleanEmail, password });
       if (needsConfirmation) setCheckEmail(true);
-      else navigate('/onboarding', { replace: true });
+      else navigate('/login', { replace: true, state: { registered: true, email: cleanEmail } });
     } catch (e) {
       setError(/already registered|already exists/i.test(e.message) ? 'An account with this email already exists' : e.message);
     } finally {

@@ -34,6 +34,8 @@ export const supabaseApi = {
       password,
       options: { data: { full_name: fullName } },
     }));
+    // Sign-up only creates the account. The user logs in separately to get a token.
+    if (data.session) await supabase.auth.signOut();
     return { needsConfirmation: !data.session };
   },
 
