@@ -1,7 +1,6 @@
 // Sends challenge events to Supabase (insert-only; the site can't read data back).
 // Supabase project: omuylnudrojhsashhvfj
-const SUPABASE_URL = 'https://omuylnudrojhsashhvfj.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_bvrU5hLcKhj6g0l88nHSfw_LF0JIFCT';
+import { SUPABASE_URL, SUPABASE_KEY, DEMO_MODE } from './lib/config.js';
 
 const NAME_KEY = 'qa-practice-candidate';
 const sessionId =
@@ -30,7 +29,7 @@ export function setCandidate(name) {
 }
 
 export function track(event, { challenge = null, locator = null, matchCount = null } = {}) {
-  if (!candidate || !SUPABASE_URL) return;
+  if (!candidate || DEMO_MODE) return;
   fetch(`${SUPABASE_URL}/rest/v1/locator_events`, {
     method: 'POST',
     headers: {

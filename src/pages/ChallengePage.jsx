@@ -89,6 +89,26 @@ export default function ChallengePage() {
           Do the task with a Playwright test. If it&apos;s done right, a green box with a code
           (like <code>PW-{id}-1A2B</code>) appears. Your test should check for that code.
         </p>
+        {challenge.inspectTip && (
+          <details className="inspect-tip">
+            <summary>Something disappears before you can inspect it?</summary>
+            <ul>
+              <li>
+                <strong>Freeze the page:</strong> in DevTools Console run{' '}
+                <code>{'setTimeout(() => { debugger; }, 1000)'}</code>, then click the button within 1 second.
+                Press F8 to resume.
+              </li>
+              <li>
+                <strong>Pause your test:</strong> add <code>await page.pause();</code> right after the click,
+                and explore the page in the Playwright Inspector.
+              </li>
+              <li>
+                <strong>Use a trace:</strong> run <code>npx playwright test --trace on</code>, then{' '}
+                <code>npx playwright show-report</code> and open the trace to see the page at every step.
+              </li>
+            </ul>
+          </details>
+        )}
         <pre className="answer"><code>{`await page.goto('${challengeUrl(id, name)}');
 // ...your steps...
 await expect(page.getByTestId('success-code')).toContainText('PW-${id}-');`}</code></pre>

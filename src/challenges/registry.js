@@ -10,7 +10,8 @@ export const LEVELS = [
 
 /*
   Every challenge: id (2 digits, used in the URL), level, title, skill, task,
-  hint (shown after "I'm stuck"), answer (shown after "Reveal answer"), Component.
+  hint (shown after "I'm stuck"), answer (shown after "Reveal answer"),
+  inspectTip (show how to inspect short-lived elements), Component.
 */
 export const CHALLENGES = [
   // ---------- Level 1: Basics ----------
@@ -44,7 +45,7 @@ await page.getByRole('button', { name: 'Continue' }).click();`,
     Component: CheckboxesRadios,
   },
   {
-    id: '04', level: 1, title: 'Cascading dropdowns', skill: 'selectOption',
+    id: '04', inspectTip: true, level: 1, title: 'Cascading dropdowns', skill: 'selectOption',
     task: 'Pick India, then Kerala, then Kochi, and Submit. States take a moment to load after you pick a country.',
     hint: 'These are native <select> elements. selectOption waits for the option to exist and the select to be enabled.',
     answer: `await page.getByLabel('Country').selectOption('India');
@@ -56,7 +57,7 @@ await page.getByRole('button', { name: 'Submit' }).click();`,
 
   // ---------- Level 2: Waiting ----------
   {
-    id: '05', level: 2, title: 'Result appears after a delay', skill: 'expect().toBeVisible({ timeout })',
+    id: '05', inspectTip: true, level: 2, title: 'Result appears after a delay', skill: 'expect().toBeVisible({ timeout })',
     task: 'Generate the report and click Download when it appears. It takes about 7 seconds.',
     hint: "The default expect timeout is 5 seconds. Click actions wait longer, but a good test asserts the report is visible first. Don't use waitForTimeout.",
     answer: `await page.getByRole('button', { name: 'Generate report' }).click();
@@ -65,7 +66,7 @@ await page.getByRole('button', { name: 'Download' }).click();`,
     Component: DelayedReport,
   },
   {
-    id: '06', level: 2, title: 'Button becomes enabled later', skill: 'auto-waiting · toBeEnabled',
+    id: '06', inspectTip: true, level: 2, title: 'Button becomes enabled later', skill: 'auto-waiting · toBeEnabled',
     task: 'Click Verify. It is disabled for the first few seconds.',
     hint: 'What does Playwright check before it clicks? Do you need to write any wait at all?',
     answer: `const verify = page.getByRole('button', { name: 'Verify' });
@@ -74,7 +75,7 @@ await verify.click();`,
     Component: EnabledLater,
   },
   {
-    id: '07', level: 2, title: 'Wait for the spinner', skill: 'toBeHidden · actionability',
+    id: '07', inspectTip: true, level: 2, title: 'Wait for the spinner', skill: 'toBeHidden · actionability',
     task: "Load the users and open Anu's profile. A spinner covers the list while it loads.",
     hint: 'The list is in the HTML immediately, but something is on top of it. Wait for the spinner to go away.',
     answer: `await page.getByRole('button', { name: 'Load users' }).click();
@@ -83,7 +84,7 @@ await page.getByRole('button', { name: 'Anu' }).click();`,
     Component: SpinnerOverlay,
   },
   {
-    id: '08', level: 2, title: 'Act on the final status', skill: 'expect().toHaveText retries',
+    id: '08', inspectTip: true, level: 2, title: 'Act on the final status', skill: 'expect().toHaveText retries',
     task: 'Start the job, then click Confirm only when the status says Completed. Clicking too early fails.',
     hint: 'Confirm is enabled straight away, so auto-waiting will not save you here. Assert the status text first.',
     answer: `await page.getByRole('button', { name: 'Start job' }).click();

@@ -1,17 +1,12 @@
-* { box-sizing: border-box; }
-body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color: #1f2933; background: #f7f8fa; }
-.header { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 14px 24px; background: #1f2933; }
-.brand { color: #fff; font-weight: 700; text-decoration: none; font-size: 18px; }
-nav { display: flex; flex-wrap: wrap; gap: 14px; }
-nav a { color: #cbd2d9; text-decoration: none; }
-nav a.active { color: #fff; border-bottom: 2px solid #4f9cf9; }
-.content { max-width: 760px; margin: 0 auto; padding: 24px 16px; }
+/* Styles for the older practice pages, scoped under .legacy so Mantine components are unaffected */
+.legacy { max-width: 760px; margin: 0 auto; color: #1f2933; }
+.legacy *, .legacy *::before, .legacy *::after { box-sizing: border-box; }
 .cards { list-style: none; padding: 0; display: grid; gap: 12px; }
 .card { background: #fff; border: 1px solid #e4e7eb; border-radius: 8px; padding: 14px 18px; }
 .card h2 { margin: 0 0 6px; font-size: 18px; color: #2563eb; }
 .card p { margin: 0; }
-button { padding: 8px 16px; border: 0; border-radius: 6px; background: #2563eb; color: #fff; cursor: pointer; font-size: 14px; margin-right: 8px; }
-button:disabled { background: #9aa5b1; cursor: not-allowed; }
+:where(.legacy) button { padding: 8px 16px; border: 0; border-radius: 6px; background: #2563eb; color: #fff; cursor: pointer; font-size: 14px; margin-right: 8px; }
+:where(.legacy) button:disabled { background: #9aa5b1; cursor: not-allowed; }
 .box { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; background: #fff; border: 1px solid #e4e7eb; border-radius: 8px; padding: 14px; }
 .box p { width: 100%; margin: 0; font-weight: 600; }
 .loading { color: #b45309; font-weight: 600; margin-top: 12px; display: inline-block; }
@@ -22,7 +17,7 @@ button:disabled { background: #9aa5b1; cursor: not-allowed; }
 .form input { padding: 8px; border: 1px solid #cbd2d9; border-radius: 6px; font-size: 14px; }
 .form button { margin-top: 8px; }
 .error { color: #b91c1c; font-weight: 600; }
-input[type="text"] { padding: 8px; border: 1px solid #cbd2d9; border-radius: 6px; }
+:where(.legacy) input[type="text"] { padding: 8px; border: 1px solid #cbd2d9; border-radius: 6px; }
 /* Learn Locators */
 .challenge { background: #fff; border: 1px solid #e4e7eb; border-radius: 8px; padding: 16px 18px; margin: 16px 0; }
 .challenge-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
@@ -115,3 +110,7 @@ label.inline { display: inline-flex; align-items: center; gap: 6px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 #users select { padding: 4px; }
 .pager a { color: #2563eb; }
+.inspect-tip { background: #fff; border: 1px solid #e4e7eb; border-radius: 6px; padding: 8px 12px; margin: 10px 0; font-size: 14px; }
+.inspect-tip summary { cursor: pointer; font-weight: 600; color: #475569; }
+.inspect-tip ul { margin: 8px 0 0; padding-left: 18px; }
+.inspect-tip li { margin-bottom: 6px; }
